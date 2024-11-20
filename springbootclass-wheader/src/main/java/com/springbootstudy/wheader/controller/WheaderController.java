@@ -13,6 +13,6 @@ public class WheaderController {
 	@GetMapping("/")
 	public String index(Model model) {
 		
-		return "views/index";
+		return "views/main";
 	}
 }
