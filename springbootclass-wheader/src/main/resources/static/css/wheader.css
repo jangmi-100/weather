@@ -1,0 +1,52 @@
+body, h1, h2, h3, p, a, button, footer {
+                font-family: 'Jua', 'Noto Sans KR', sans-serif;
+                font-weight: 400;
+                margin: 0;
+                padding: 0;
+            }
+
+            .logo {
+                font-family: 'Jua', 'Noto Sans KR', sans-serif;
+                font-weight: 500;
+                margin: 0;
+                padding: 0;
+                font-size: 1.5em; /* 크기 크게 */
+                color: #007bff; /* 파란색 */
+                text-align: center;
+                font-weight: bold;
+                background: linear-gradient(45deg, #007bff, #00d4ff); /* 파란색 그라데이션 */
+                -webkit-background-clip: text; /* 텍스트에 배경 클리핑 */
+                color: transparent; /* 텍스트 색상 투명 */
+                text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), 0 0 15px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+                transition: all 0.4s ease; /* 호버 시 효과 */
+            }
+
+            .logo:hover {
+                transform: scale(1.2); /* 호버 시 크기 확대 */
+                text-shadow: 6px 6px 15px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 0, 0, 0.15); /* 더 강한 그림자 */
+            }
+
+            /* Flexbox를 사용한 전체 레이아웃 */
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+
+            /* 메인 콘텐츠 영역 */
+            main {
+                flex: 1;
+            }
+
+            /* Footer 하단 고정 */
+            footer {
+                background-color: #f1f1f1;
+                text-align: center;
+                padding: 10px 0;
+                border-top: 1px solid #ddd;
+                width: 100%;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                z-index: 1000;
+            }
