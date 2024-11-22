@@ -7,18 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Jua&family=Noto+Sans+KR:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/member.css" rel="stylesheet">
-    <style>
-        #emailId, #emailDomain, #mobile1, #mobile2, #mobile3 {
-            max-width: 80px; /* 입력란 크기 제한 */
-        }
-        #emailDomain {
-            margin-left: 5px; /* 도메인 입력란 간격 */
-        }
-        #mobile1, #mobile2, #mobile3 {
-            margin-right: 5px; /* 휴대폰 입력란 간격 */
-        }
-    </style>
+   <link href="css/member.css" rel="stylesheet">
+  
 </head>
 <body>
     <div class="signup-container">
@@ -30,17 +20,19 @@
             <input type="hidden" name="isIdCheck" id="isIdCheck" value="false">
             
             <div class="mb-3">
+          
                 <label for="name" class="form-label">이름</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>
             
-            <div class="mb-3">
-                <label for="id" class="form-label">아이디</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="id" name="id" required>
-                    <button type="button" class="btn btn-warning" id="btnOverlapId">중복확인</button>
-                </div>
-            </div>
+            <div class="form-group">
+		    <label for="userId">아이디</label>
+		    <div style="display: flex; gap: 10px; align-items: center;">
+		        <input type="text" id="userId" name="userId" placeholder="아이디를 입력하세요" style="flex: 1;">
+		        <button type="button" class="btn" style="width: auto; padding: 10px 20px;">중복확인</button>
+		    </div>
+			</div>
+
             
             <div class="mb-3">
                 <label for="pass1" class="form-label">비밀번호</label>
@@ -51,29 +43,25 @@
                 <label for="pass2" class="form-label">비밀번호 확인</label>
                 <input type="password" class="form-control" id="pass2" name="pass2" required>
             </div>
-            
+          	   
             <div class="row my-3">
-						<div class="col-8 offset-2">
-							<label for="emailId" class="form-label">이 메 일</label>
-							<div class="row">
-								<div class="col-md-4">
-									<input type="text" class="form-control" name="emailId" id="emailId">
-								</div> @ 
-								<div class="col-md-4">
-									<input type="text" class="form-control" name="emailDomain" id="emailDomain">
-								</div>
-								<div class="col-md-3">
-									<select class="form-select" name="selectDomain" id="selectDomain">
-										<option>직접입력</option>
-										<option>네이버</option>
-										<option>다음</option>
-										<option>한메일</option>
-										<option>구글</option>
-									</select>
-								</div>
-							</div>
-						</div>	
+						<div class="form-group">
+					    <label for="email">이메일</label>
+					    <div style="display: flex; gap: 10px; align-items: center;">
+					        <input type="text" class="form-control" id="emailId" name="emailId" placeholder="아이디" style="flex: 1;">
+					        <span>@</span>
+					        <input type="text" class="form-control" id="emailDomain" name="emailDomain" placeholder="도메인" style="flex: 1;">
+					        <select class="form-select" id="selectDomain" name="selectDomain" style="width: auto;">
+					            <option value="직접입력">직접입력</option>
+					            <option value="naver">네이버</option>
+					            <option value="daum">다음</option>
+					            <option value="hanmail">한메일</option>
+					            <option value="gmail">구글</option>
+					        </select>
+					    </div>
 					</div>
+					</div>
+				
 					<div class="row my-3">
 						<div class="col-8 offset-2">
 							<label for="mobile2" class="form-label">휴 대 폰</label>
@@ -97,9 +85,10 @@
 							</div>
 						</div>
 					</div>	
+					
             
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary">가입하기</button>
+                <button type="submit" class="btn btn-primary" id="registar">가입하기</button>
             </div>
         </form>
     </div>
