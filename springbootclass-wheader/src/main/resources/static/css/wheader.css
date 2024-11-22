@@ -37,7 +37,10 @@ body, h1, h2, h3, p, a, button, footer {
             main {
                 flex: 1;
             }
-
+            
+            
+            
+       
             /* Footer 하단 고정 */
             footer {
                 background-color: #f1f1f1;

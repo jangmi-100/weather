@@ -3,8 +3,27 @@
 	<!--/* header  */-->
 	<!--/* header라는 프래그먼트를 정의	*/-->
 	<div th:fragment="header" >
-		 <header class="p-3 mb-3 border-bottom">
-            <div class="container">
+	<style>
+	
+        header {
+            background-color: #f1f1f1;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd; /* 선 */
+            width: 100%; /* 전체 화면 너비 */
+            position: fixed; /* 상단 고정 */
+            top: 0;
+            left: 0;
+            z-index: 1000; /* 다른 요소 위 */
+        }
+        body {
+            margin: 0;
+            padding-top: 60px; /* 고정 헤더 높이만큼 여백 */
+        }
+    </style>
+	
+	</style>
+		 <header class="p-3 mb-3">
+            <div class="container  border-bottom">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
                         <p class="logo">날씨어때?</p>
