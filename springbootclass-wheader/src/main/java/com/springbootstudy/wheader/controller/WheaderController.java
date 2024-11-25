@@ -16,11 +16,7 @@ public class WheaderController {
 		return "views/main";
 	}
 	
-	@GetMapping("/login")
-	public String Login(Model model) {
-		
-		return "member/Login";
-	}
+
 	
 	@GetMapping("/signup")
 	public String Signup(Model model) {

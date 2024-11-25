@@ -6,7 +6,7 @@
 	<style>
 	
         header {
-            background-color: #f1f1f1;
+           
             padding: 10px 0;
             border-bottom: 1px solid #ddd; /* 선 */
             width: 100%; /* 전체 화면 너비 */
@@ -23,7 +23,7 @@
 	
 	</style>
 		 <header class="p-3 mb-3">
-            <div class="container  border-bottom">
+            <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
                     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-decoration-none">
                         <p class="logo">날씨어때?</p>
@@ -37,7 +37,7 @@
                  
                    <th:block th:unless="${session.isLogin}">
                      <div class="grid gap-3">
-                   		<a href="/login" class="text-decoration-none p-2 g-col-6">로그인</a>|
+                   		<a href="/loginForm" class="text-decoration-none p-2 g-col-6">로그인</a>|
                    		<a href="/signup" class="text-decoration-none p-2 g-col-6">회원가입</a>
                    		</div>
                    </th:block>
@@ -49,11 +49,10 @@
                             <img src="img/person.png" alt="mdo" width="32" height="32" class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small">
-                            <li><a class="dropdown-item" href="#">New project...</a></li>
-                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Sign out</a></li>
+                            <li><a class="dropdown-item" href="#">마이페이지</a></li>
+                           <!--  <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="#">Profile</a></li> -->
+                            <li><a class="dropdown-item" href="/memberLogout">로그아웃</a></li>
                         </ul>
                     </div>
                 </div>
