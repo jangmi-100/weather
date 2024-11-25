@@ -16,6 +16,10 @@ public class WheaderController {
 		return "views/main";
 	}
 	
+	@GetMapping("/MyPage")
+	public String Mypage(Model model) {
+		return "views/myPage";
+	}
 
 	
 	@GetMapping("/signup")
