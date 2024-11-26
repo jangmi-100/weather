@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Search</title>
+      <script src="js/jquery-3.7.1.min.js"></script>
+        <script src="js/test.js"></script>
+    <link rel="stylesheet" href="css/test.css">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0fd6336ae3a4bd2b088d2e6d6f057cbe&libraries=services"></script>
+    <style>
+       
+    </style>
+</head>
+<body>
+    <div id="wrapper">
+        <header>
+            <img src="/img/rain.png" alt="Weather Icon">
+            <p>날씨 단기예보 검색</p>
+        </header>
+        <main>
+            <div class="ct_search">
+                <div class="search_bar">
+                    <img src="/img/search.png" alt="Search Icon">
+                    <input id="searchText" class="searchText" type="text" placeholder="장소 입력 후 검색 버튼 클릭">
+                    <button id="btnSearch" class="btnSearch">검색</button>
+                </div>
+            </div>
+            <div class="ly_content">
+			    <div id="map" class="ct_map"></div>
+			    <div class="ct_weather">Weather Information</div>
+			</div>
+
+        </main>
+        <footer>
+            <div class="ct_footer">
+                Copyright© circle All Rights RESERVED.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        window.onload = function () {
+            var container = document.getElementById('map');
+            var options = {
+                center: new kakao.maps.LatLng(33.450701, 126.570667),
+                level: 3
+            };
+            var map = new kakao.maps.Map(container, options);
+            var geocoder = new kakao.maps.services.Geocoder();
+
+            // 현재 위치 설정 함수
+            function setCurrentLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        var lat = position.coords.latitude;
+                        var lon = position.coords.longitude;
+                        var coords = new kakao.maps.LatLng(lat, lon);
+
+                        // 마커 표시
+                        var marker = new kakao.maps.Marker({
+                            map: map,
+                            position: coords
+                        });
+
+                        // 인포윈도우 표시
+                        var infowindow = new kakao.maps.InfoWindow({
+                            content: '<div style="width:150px;text-align:center;padding:6px 0;">현재 위치</div>'
+                        });
+                        infowindow.open(map, marker);
+
+                        // 지도 중심좌표 이동
+                        map.setCenter(coords);
+                    }, function (error) {
+                        alert("현재 위치 검색을 허용해주십시오");
+                        console.error("Error: 위치 액세스 거부");
+                    });
+                } else {
+                    alert("현재 위치를 지원하지 않는 브라우저입니다.");
+                }
+            }
+
+            // 검색 버튼 클릭 이벤트
+            document.getElementById('btnSearch').addEventListener('click', function () {
+                var searchText = document.getElementById('searchText').value.trim();
+
+                if (!searchText) {
+                    alert('검색어를 입력하세요.');
+                    return;
+                }
+
+                geocoder.addressSearch(searchText, function (result, status) {
+                    if (status === kakao.maps.services.Status.OK) {
+                        var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                        // 마커 표시
+                        var marker = new kakao.maps.Marker({
+                            map: map,
+                            position: coords
+                        });
+
+                        // 인포윈도우 표시
+                        var infowindow = new kakao.maps.InfoWindow({
+                            content: `<div style="width:150px;text-align:center;padding:6px 0;">${searchText}</div>`
+                        });
+                        infowindow.open(map, marker);
+
+                        // 지도 중심 이동
+                        map.setCenter(coords);
+                    } else {
+                        alert('검색 결과를 찾을 수 없습니다. 현재 위치를 표시합니다.');
+                        setCurrentLocation();
+                    }
+                });
+            });
+        };
+        
+    </script>
+   
+</body>
+</html>
