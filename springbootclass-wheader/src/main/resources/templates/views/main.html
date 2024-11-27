@@ -8,15 +8,59 @@
        
         <!-- 메인 콘텐츠 -->
      <th:block layout:fragment="content"> 
-        <main class="container">
-            <div class="text-center mt-5">
-                <h1>Footer 고정 예제</h1>
-                <p class="lead">페이지 하단에 고정된 Footer입니다.</p>
-            </div>
-        </main>
-        <!-- Footer -->
-        
-        <!-- Bootstrap JS -->
-      
+        <!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카카오 지도 예제</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0fd6336ae3a4bd2b088d2e6d6f057cbe"></script>
+    <style>
+        #map {
+            width: 600px;
+            height: 400px;
+            margin: 20px ;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        // 지도 중심 좌표 설정 (서울시청 기준)
+        var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
+        var mapOption = {
+            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울시청 좌표
+            level: 3 // 지도 확대 레벨
+        };
+
+        // 지도 생성
+        var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+        // 마커 생성
+        var markerPosition = new kakao.maps.LatLng(37.5665, 126.9780); // 마커 위치
+
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+
+        // 마커를 지도에 표시
+        marker.setMap(map);
+
+        // 지도 클릭 이벤트
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+            var latlng = mouseEvent.latLng; 
+
+            // 마커 위치를 클릭한 곳으로 이동
+            marker.setPosition(latlng);
+
+            // 클릭한 좌표를 콘솔에 출력
+            console.log('위도: ' + latlng.getLat() + ', 경도: ' + latlng.getLng());
+        });
+    </script>
+</body>
+</html>
+
     </th:block>
 </html>

@@ -34,7 +34,7 @@
                         const { nx, ny } = latLonToGrid(latitude, longitude); // 격자 좌표 변환
 
                         // API 호출
-                        const apiUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst";
+                        const apiUrl = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst";
                         const serviceKey = "Gow%2FB%2BpvwKtRdRGfWEsPYdmR4X8u8LB342Dka9AaCg6XgZaYHeeOBcWH8aK9VT%2BfYSDLtu0o9k6WY%2BRp7E00ZA%3D%3D"; // 기상청 API 키
                         const baseDate = new Date().toISOString().slice(0, 10).replace(/-/g, "");
                         const baseTime = getBaseTime(); // 기준시간 동적 계산
@@ -45,9 +45,13 @@
                         try {
                             const response = await fetch(url);
                             const data = await response.json();
+                            console.log("API 응답 데이터:", data);
 
-                            // 온도와 날씨 정보 출력
-                            displayWeather(data.response.body.items.item);
+                            if (data.response && data.response.body && data.response.body.items) {
+                                displayWeather(data.response.body.items.item);
+                            } else {
+                                alert("날씨 정보를 가져오지 못했습니다.");
+                            }
                         } catch (error) {
                             console.error("Error fetching weather data:", error);
                             alert("날씨 정보를 가져오는 데 실패했습니다.");
@@ -126,30 +130,36 @@
             weatherInfo.innerHTML = '';
 
             items.forEach((item) => {
-                const category = item.category; // 예보 항목
-                const value = item.fcstValue; // 예보 값
-                const time = item.fcstTime; // 예보 시간
-                const date = item.fcstDate; // 예보 날짜
+                const category = item.category;
+                const value = item.obsrValue;
+                const time = item.fcstTime;
+                const date = item.fcstDate;
 
-                // 기온(T1H)과 날씨(PTY) 항목만 필터링
-                if (category === 'T1H' || category === 'PTY') {
-                    let weatherDescription = '';
-                    let output = '';
-                    if (category === 'T1H') {
-                        weatherDescription = `기온: ${value}°C`;
-                    } else if (category === 'PTY') {
-                        switch(value) {
-                            case '0': weatherDescription = '날씨: 맑음'; break;
-                            case '1': weatherDescription = '날씨: 비'; break;
-                            case '2': weatherDescription = '날씨: 비/눈'; break;
-                            case '3': weatherDescription = '날씨: 눈'; break;
-                            case '4': weatherDescription = '날씨: 소나기'; break;
-                            default: weatherDescription = '날씨 정보 없음'; break;
-                        }
+                let weatherDescription = '';
+
+                if (category === 'T1H') {
+                    weatherDescription = `기온: ${value}°C`;
+                } else if (category === 'RN1') {
+                    weatherDescription = `1시간 강수량: ${value}mm`;
+                } else if (category === 'REH') {
+                    weatherDescription = `습도: ${value}%`;
+                } else if (category === 'WSD') {
+                    weatherDescription = `풍속: ${value}m/s`;
+                } else if (category === 'LGT') {
+                    weatherDescription = `낙뢰: ${value}`;
+                } else if (category === 'PTY') {
+                    switch (value) {
+                        case '0': weatherDescription = '강수형태: 맑음'; break;
+                        case '1': weatherDescription = '강수형태: 비'; break;
+                        case '2': weatherDescription = '강수형태: 비/눈'; break;
+                        case '3': weatherDescription = '강수형태: 눈'; break;
+                        case '4': weatherDescription = '강수형태: 소나기'; break;
+                        default: weatherDescription = '강수형태 정보 없음'; break;
                     }
+                }
 
-                    // 날짜, 시간, 기온, 날씨를 한 줄로 출력
-                    output = `${date} ${time}시: ${weatherDescription}`;
+                if (weatherDescription) {
+                    const output = `${date} ${time}시: ${weatherDescription}`;
                     weatherInfo.innerHTML += `<p>${output}</p>`;
                 }
             });
