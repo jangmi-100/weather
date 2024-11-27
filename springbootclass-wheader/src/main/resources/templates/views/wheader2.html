@@ -1,36 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather Search</title>
-      <script src="js/jquery-3.7.1.min.js"></script>
-        <script src="js/test.js"></script>
-    <link rel="stylesheet" href="css/test.css">
+    <title>날씨 검색</title>
+    <script src="js/jquery-3.7.1.min.js"></script>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0fd6336ae3a4bd2b088d2e6d6f057cbe&libraries=services"></script>
+    <link rel="stylesheet" href="css/test.css">
     <style>
-       
+        .ct_weather {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .weather-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .weather-category {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div id="wrapper">
         <header>
-            <img src="/img/rain.png" alt="Weather Icon">
+            <img src="/img/rain.png" alt="날씨 아이콘">
             <p>날씨 단기예보 검색</p>
         </header>
         <main>
             <div class="ct_search">
                 <div class="search_bar">
-                    <img src="/img/search.png" alt="Search Icon">
+                    <img src="/img/search.png" alt="검색 아이콘">
                     <input id="searchText" class="searchText" type="text" placeholder="장소 입력 후 검색 버튼 클릭">
                     <button id="btnSearch" class="btnSearch">검색</button>
                 </div>
             </div>
             <div class="ly_content">
-			    <div id="map" class="ct_map"></div>
-			    <div class="ct_weather">Weather Information</div>
-			</div>
-
+                <div id="map" class="ct_map"></div>
+                <div class="ct_weather">날씨 정보</div>
+            </div>
         </main>
         <footer>
             <div class="ct_footer">
@@ -49,7 +59,6 @@
             var map = new kakao.maps.Map(container, options);
             var geocoder = new kakao.maps.services.Geocoder();
 
-            // 현재 위치 설정 함수
             function setCurrentLocation() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function (position) {
@@ -57,19 +66,15 @@
                         var lon = position.coords.longitude;
                         var coords = new kakao.maps.LatLng(lat, lon);
 
-                        // 마커 표시
                         var marker = new kakao.maps.Marker({
                             map: map,
                             position: coords
                         });
 
-                        // 인포윈도우 표시
                         var infowindow = new kakao.maps.InfoWindow({
                             content: '<div style="width:150px;text-align:center;padding:6px 0;">현재 위치</div>'
                         });
                         infowindow.open(map, marker);
-
-                        // 지도 중심좌표 이동
                         map.setCenter(coords);
                     }, function (error) {
                         alert("현재 위치 검색을 허용해주십시오");
@@ -80,10 +85,8 @@
                 }
             }
 
-            // 검색 버튼 클릭 이벤트
             document.getElementById('btnSearch').addEventListener('click', function () {
                 var searchText = document.getElementById('searchText').value.trim();
-
                 if (!searchText) {
                     alert('검색어를 입력하세요.');
                     return;
@@ -93,29 +96,116 @@
                     if (status === kakao.maps.services.Status.OK) {
                         var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-                        // 마커 표시
                         var marker = new kakao.maps.Marker({
                             map: map,
                             position: coords
                         });
 
-                        // 인포윈도우 표시
                         var infowindow = new kakao.maps.InfoWindow({
                             content: `<div style="width:150px;text-align:center;padding:6px 0;">${searchText}</div>`
                         });
                         infowindow.open(map, marker);
-
-                        // 지도 중심 이동
                         map.setCenter(coords);
+
+                        getWeatherInfo(result[0].y, result[0].x);
                     } else {
                         alert('검색 결과를 찾을 수 없습니다. 현재 위치를 표시합니다.');
                         setCurrentLocation();
                     }
                 });
             });
-        };
-        
+            
+         // 위도, 경도를 격자 좌표로 변환하는 함수
+            function latLonToGrid(code, v1, v2) {
+                const RE = 6371.00877;
+                const GRID = 5.0;
+                const SLAT1 = 30.0;
+                const SLAT2 = 60.0;
+                const OLON = 126.0;
+                const OLAT = 38.0;
+                const XO = 43;
+                const YO = 136;
+
+                const DEGRAD = Math.PI / 180.0;
+                const RADDEG = 180.0 / Math.PI;
+
+                const re = RE / GRID;
+                const slat1 = SLAT1 * DEGRAD;
+                const slat2 = SLAT2 * DEGRAD;
+                const olon = OLON * DEGRAD;
+                const olat = OLAT * DEGRAD;
+
+                const sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+                const sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+                const ro = re * sf / Math.pow(sf, sn);
+
+                const rs = {};
+                if (code === "toXY") {
+                    rs['lat'] = v1;
+                    rs['lng'] = v2;
+                    const ra = re * sf / Math.pow(Math.tan(Math.PI * 0.25 + v1 * DEGRAD * 0.5), sn);
+                    let theta = v2 * DEGRAD - olon;
+                    theta = Math.atan2(Math.sin(theta), Math.cos(theta));
+                    rs['x'] = Math.floor(ra * Math.sin(theta) + XO + 0.5);
+                    rs['y'] = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+                }
+                return rs;
+            }
+
+
+            function getWeatherInfo(lat, lon) {
+                var xhr = new XMLHttpRequest();
+                var serviceKey = 'Gow%2FB%2BpvwKtRdRGfWEsPYdmR4X8u8LB342Dka9AaCg6XgZaYHeeOBcWH8aK9VT%2BfYSDLtu0o9k6WY%2BRp7E00ZA%3D%3D'; // 인증키 입력
+                var today = new Date();
+                var yyyy = today.getFullYear();
+                var mm = today.getMonth() + 1;
+                var dd = today.getDate();
+                var hh = today.getHours();
+                var mi = today.getMinutes();
+
+                var baseDate = `${yyyy}${mm < 10 ? '0' + mm : mm}${dd < 10 ? '0' + dd : dd}`;
+                var baseTime = `${hh < 10 ? '0' + hh : hh}${mi < 10 ? '0' + mi : mi}`;
+
+                // 위도, 경도를 그리드 좌표로 변환
+                var gridCoords = latLonToGrid(lat, lon);
+
+                var url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst';
+                var queryParams = '?' + encodeURIComponent('serviceKey') + '=' + serviceKey;
+                queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
+                queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('1000');
+                queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON');
+                queryParams += '&' + encodeURIComponent('base_date') + '=' + encodeURIComponent(baseDate);
+                queryParams += '&' + encodeURIComponent('base_time') + '=' + encodeURIComponent(baseTime);
+                queryParams += '&' + encodeURIComponent('nx') + '=' + encodeURIComponent(gridCoords.nx);
+                queryParams += '&' + encodeURIComponent('ny') + '=' + encodeURIComponent(gridCoords.ny);
+
+                xhr.open('GET', url + queryParams);
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var responseData = JSON.parse(this.responseText);
+                        console.log("응답 데이터:", responseData);  // 응답 데이터 출력
+
+                        // 응답 데이터에서 날씨 정보 추출
+                        var weatherData = responseData.response.body.items.item;
+                        console.log("날씨 데이터:", weatherData);  // 날씨 데이터 출력
+
+                        var weatherHtml = "<ul>";
+                        weatherData.forEach(function(item) {
+                            weatherHtml += `<li class="weather-item"><span class="weather-category">${item.category}</span>: ${item.fcstValue}</li>`;
+                        });
+                        weatherHtml += "</ul>";
+
+                        document.querySelector('.ct_weather').innerHTML = weatherHtml;
+                    } else {
+                        document.querySelector('.ct_weather').innerHTML = "날씨 정보를 가져오지 못했습니다.";
+                    }
+                };
+                xhr.send();
+            }
+
+
+
+        }
     </script>
-   
 </body>
 </html>

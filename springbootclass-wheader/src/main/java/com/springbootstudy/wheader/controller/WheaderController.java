@@ -34,5 +34,11 @@ public class WheaderController {
 		
 		return "views/wheader2";
 	}
+	
+	@GetMapping("/newtest")
+	public String wheader1(Model model) {
+		
+		return "views/Newtest";
+	}
 
 }
